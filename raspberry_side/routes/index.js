@@ -3,7 +3,7 @@ var router = express.Router();
 
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
-
+const { s_exec } = require('child_process');
 async function ls() {
 	const { stdout, stderr } = await exec('ls');
 	console.log('stdout: ', stdout);
@@ -18,8 +18,9 @@ async function custom_exec(cmd){
 		console.log('stderr: ', stderr);
 }
 
-async function tc(){
-	let cmd = 'tc qdisc add dev enp0s3 root netem delay 100ms';
+async function tc(delay){
+	console.log(delay+" is ok.");
+	let cmd = 'tc qdisc add dev enp0s3 root netem delay '+delay+'ms';
 	const { stdout, stderr } = await exec(cmd);
 
 	if(stdout)
@@ -29,7 +30,13 @@ async function tc(){
 	else{
 		//for 1 ~ 10
 		//start_time
-		test();
+		//test();
+		const { stdout, stderr } = await exec('ping -c 10 8.8.8.8');
+
+		if(stdout)
+			console.log('stdout: ', stdout);
+		if(stderr)
+			console.log('stderr: ', stderr);
 		//end_time
 		//result = end_time - start_time
 		//array.add(result);
@@ -37,7 +44,7 @@ async function tc(){
 		//send(array)
 		custom_exec('tc qdisc show dev enp0s3')
 			.then(()=>{
-				console.log('test');
+				console.log('test end.');
 				custom_exec('sudo tc qdisc del dev enp0s3 root');
 
 			});
@@ -46,7 +53,8 @@ async function tc(){
 }
 
 function test(){
-	custom_exec('ping -c 10 8.8.8.8');
+//	custom_exec('ping -c 10 8.8.8.8');
+	let cmd = 'ping -c 10 8.8.8.8';
 }
 
 function http2client(){
@@ -56,8 +64,8 @@ function http2client(){
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-
-	tc();
+	let delay = req.query.delay;
+	tc(delay);
   res.render('index', { title: 'Express' });
 });
 
