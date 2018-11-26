@@ -6,28 +6,70 @@
 
 var app = require('../app');
 var debug = require('debug')('mqtt-server:server');
-var http = require('http');
 
+var mosca = require('mosca');
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
-app.set('port', port);
+var settings = {
+  port: 1883,
+};
 
-/**
- * Create HTTP server.
- */
+var server = new mosca.Server(settings, function() {
+  console.log('Mosca server is up and running')
+});
 
-var server = http.createServer(app);
+server.on('clientConnected', function(client) {
+  console.log('Client Connected:', client.id);
+});
+  
+  // fired when a client disconnects
+server.on('clientDisconnected', function(client) {
+  console.log('Client Disconnected:', client.id);
+});
 
-/**
- * Listen on provided port, on all network interfaces.
- */
+server.on('published', function(packet, client) {
+  console.log('Published', packet);
+  console.log('Client', client);
+});
 
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+// server.published = function(packet, client, cb) {
+
+//   if (packet.topic.indexOf('echo') === 0) {
+//     console.log('ON PUBLISHED', packet.payload.toString(), 'on topic', packet.topic);
+//     console.log('@ ',cb());
+//     return cb();
+//   }
+
+//   var newPacket = {
+//     topic: 'echo/' + packet.topic,
+//     payload: packet.payload,
+//     retain: packet.retain,
+//     qos: packet.qos
+//   };
+
+//   console.log('newPacket', newPacket);
+//   console.log('@ ',cb);
+//   server.publish(newPacket, cb);
+// };
+
+// var port = normalizePort(process.env.PORT || '3000');
+// app.set('port', port);
+
+// /**
+//  * Create HTTP server.
+//  */
+
+// var server = http.createServer(app);
+
+// /**
+//  * Listen on provided port, on all network interfaces.
+//  */
+
+// server.listen(port);
+// server.on('error', onError);
+// server.on('listening', onListening);
 
 /**
  * Normalize a port into a number, string, or false.
