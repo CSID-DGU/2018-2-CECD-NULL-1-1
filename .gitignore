@@ -1,0 +1,7 @@
+# 폴더
+nvm/
+node_modules/
+
+# 파일
+.DS_Store
+
