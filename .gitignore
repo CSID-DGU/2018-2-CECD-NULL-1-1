@@ -5,3 +5,9 @@ node_modules/
 # 파일
 .DS_Store
 
+
+# 중계서버
+ProxyServer/node_modules/
+
+# idea
+.idea/
