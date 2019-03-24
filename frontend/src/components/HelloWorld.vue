@@ -1,6 +1,7 @@
 <template>
   <div class="hello">
-    <v-btn color="success">Success</v-btn>
+    <v-btn color="success" @click="publish1">Success</v-btn>
+    <div class="sub" v-html="buff"></div>
     <v-layout>
       <v-flex xs12 sm6 offset-sm3>
         <v-card>
@@ -137,37 +138,33 @@
 </template>
 
 <script>
-import mqtt from "mqtt"
+import Vue from 'vue'
+import VueMqtt from 'vue-mqtt'
+import connect from 'mqtt'
 
 export default {
   name: 'HelloWorld',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App !!!!!!!!!!!'
+      msg: 'Welcome to Your Vue.js App !!!!!!!!!!!',
+      buff: 'Sub1:<br>'
     }
   },
   mounted(){
-    var mqtt = require('mqtt')
-    var client = mqtt.connect('mqtt://localhost:1883')
-
-    client.on('connect', function () {
-      console.log(`mqtt client connected`);
-
-      client.subscribe('mytopic', {qos: 0}, function () {
-        console.log('subs')
-      });
-    })
-
-    client.on('message', function (topic, message) {
-      // message is Buffer
-      console.log(message.toString())
-      client.end()
-    })
+    Vue.use(VueMqtt, 'ws://localhost:7700')
+    this.$mqtt.subscribe('VueMqtt/#')
+    this.$mqtt.publish('VueMqtt/publish1', 'message to Sub1')
+  },
+  mqtt: {
+    'VueMqtt/publish1' (data) {
+      this.buff = this.buff + data + '<br>'
+    }
   },
   methods: {
-    mqttConnect() {
-
-    }
+    publish1 () {
+      console.log('click')
+      this.$mqtt.publish('VueMqtt/publish1', 'message to Sub1')
+    },
   }
 }
 

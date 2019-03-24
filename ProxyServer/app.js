@@ -63,4 +63,19 @@ spdy
       }
     });
 
+// mqtt : client to server - use webSocket
+var WebSocket = require("ws").Server;
+var wss = new WebSocket({ port: 7700 });
+
+// 연결이 수립되면 클라이언트에 메시지를 전송하고 클라이언트로부터의 메시지를 수신한다
+wss.on("connection", function connection(ws) {
+  console.log('connected!')
+  // ws.send("Hello! I am a server.");
+
+  ws.send('hi')
+  ws.on("message", function incomming(message) {
+    console.log("Received: %s", message);
+  });
+});
+
 module.exports = app;
