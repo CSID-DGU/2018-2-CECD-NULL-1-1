@@ -38,4 +38,28 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+const spdy = require('spdy')
+const fs = require('fs')
+const port = 8080;
+
+app.get('/h2', (req, res) => {
+  res.status(200).json({message: 'ok'})
+});
+
+const options = {
+  key: fs.readFileSync(__dirname + '/self.key'),
+  cert:  fs.readFileSync(__dirname + '/self.crt')
+};
+
+spdy
+    .createServer(options, app)
+    .listen(port, (error) => {
+      if (error) {
+        console.error(error)
+        return process.exit(1)
+      } else {
+        console.log('Listening on port: ' + port + '.')
+      }
+    });
+
 module.exports = app;
