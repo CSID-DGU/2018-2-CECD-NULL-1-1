@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+
 /**
  * Module dependencies.
  */
@@ -82,6 +83,7 @@ function onError(error) {
  */
 
 function onListening() {
+  console.log("http server On")
   var addr = server.address();
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
