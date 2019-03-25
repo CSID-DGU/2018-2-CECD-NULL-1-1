@@ -16,6 +16,10 @@ export default new Router({
       path: '/image',
       name: 'ImageTest',
       component: ImageTest
+    },
+    { 
+      path: '/user', 
+      component:{template:`<div>Hi</div>`}
     }
   ]
 })

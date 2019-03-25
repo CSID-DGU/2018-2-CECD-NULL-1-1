@@ -6,6 +6,7 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var mqttRouter = require('./routes/mqttRouter');
 
 var app = express();
 
@@ -22,6 +23,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/mqtt', mqttRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -41,7 +43,7 @@ app.use(function(err, req, res, next) {
 
 const spdy = require('spdy')
 const fs = require('fs')
-const port = 8081;
+const port = 8082;
 
 app.get('/h2', (req, res) => {
   res.status(200).json({message: 'ok'})
@@ -64,17 +66,24 @@ spdy
     });
 
 // mqtt : client to server - use webSocket
+var mqttHandler = require('./mqttHandlerWithClient');
+
 var WebSocket = require("ws").Server;
 var wss = new WebSocket({ port: 7700 });
 
-// 연결이 수립되면 클라이언트에 메시지를 전송하고 클라이언트로부터의 메시지를 수신한다
 wss.on("connection", function connection(ws) {
   console.log('connected!')
-  // ws.send("Hello! I am a server.");
 
-  ws.send('hi')
   ws.on("message", function incomming(message) {
-    console.log("Received: %s", message);
+    if(message == "mqttStart") {
+      var mqttClient = new mqttHandler();
+      
+      mqttClient.connect(ws);
+      mqttClient.sendMessage('give');
+    }
+    else {
+      console.log("No Start: %s", message);
+    }
   });
 });
 

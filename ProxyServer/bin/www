@@ -10,14 +10,6 @@ var debug = require('debug')('proxyserver:server');
 var http = require('http');
 
 /**
- * MQTT server 실행 모듈
- */
-var mqtt = require('../mqttHandler');
-
-var mqttHandler = new mqtt()
-mqttHandler.mqttConnect(1883)
-
-/**
  * Get port from environment and store in Express.
  */
 

@@ -1,7 +1,7 @@
 <template>
   <div class="hello">
-    <v-btn color="success" @click="publish1">Success</v-btn>
-    <div class="sub" v-html="buff"></div>
+    <v-btn color="success" @click="openWebSocket(7700)">Sucs</v-btn>
+    <v-btn color="success" @click="printImage">Success</v-btn>
     <v-layout>
       <v-flex xs12 sm6 offset-sm3>
         <v-card>
@@ -16,7 +16,7 @@
               >
                 <v-card flat tile class="d-flex">
                   <v-img
-                    :src="`https://localhost:8081/images/article${n % 5 + 1}.jpg`"
+                    :src="`https://localhost:8082/images/article${n % 5 + 1}.jpg`"
                     aspect-ratio="1"
                     class="grey lighten-2"
                   >
@@ -42,7 +42,7 @@
             >
               <v-card flat tile class="d-flex">
                 <v-img
-                  :src="`https://localhost:8081/images/article${n % 5 + 1}.jpg`"
+                  :src="`https://localhost:8082/images/article${n % 5 + 1}.jpg`"
                   aspect-ratio="1"
                   class="grey lighten-2"
                 >
@@ -138,32 +138,56 @@
 </template>
 
 <script>
-import Vue from 'vue'
-import VueMqtt from 'vue-mqtt'
-import connect from 'mqtt'
 
 export default {
   name: 'HelloWorld',
   data () {
     return {
       msg: 'Welcome to Your Vue.js App !!!!!!!!!!!',
-      buff: 'Sub1:<br>'
+      imageBytes: '',
+      sibal:''
     }
   },
   mounted(){
-    Vue.use(VueMqtt, 'ws://localhost:7700')
-    this.$mqtt.subscribe('VueMqtt/#')
-    this.$mqtt.publish('VueMqtt/publish1', 'message to Sub1')
+    // this.openWebSocket(7700)
   },
-  mqtt: {
-    'VueMqtt/publish1' (data) {
-      this.buff = this.buff + data + '<br>'
-    }
+  updated(){
+    console.log('updated1')
+    this.$nextTick(function () {
+      console.log('updated')
+    })
   },
   methods: {
-    publish1 () {
-      console.log('click')
-      this.$mqtt.publish('VueMqtt/publish1', 'message to Sub1')
+    printImage(){
+      console.log(this.imageBytes)
+      console.log('sibal : '+this.sibal)
+      // this.openWebSocket(7700)
+    },
+    openWebSocket (webSocketPort) {
+      var ws = new WebSocket("ws://localhost:"+webSocketPort);
+
+      // 연결이 수립되면 서버에 메시지를 전송한다
+      ws.onopen = function(event) {
+        console.log("connected")
+        ws.send("mqttStart");
+      }
+
+      // 서버로 부터 메시지를 수신한다
+      // 전송받은 이미지를 출력하도록해줌
+      ws.onmessage = function(event) {
+        this.imageBytes = 'data:image/jpeg;base64,' + event.data
+        console.log("Server message: ", this.imageBytes);
+        this.printImage()
+        this.changeData(this.imageBytes)
+      }
+
+      // error event handler
+      ws.onerror = function(event) {
+        console.log("Server error message: ", event.data);
+      }
+    },
+    changeData (data){
+      this.sibal = data
     },
   }
 }
@@ -197,3 +221,4 @@ a {
 }
 
 </style>
+
