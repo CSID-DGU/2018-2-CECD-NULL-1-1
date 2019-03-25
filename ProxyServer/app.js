@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+// var cors = require('cors');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -38,13 +39,17 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+// CORS 설정
+// app.use(cors());
+app.all('/*', function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    next();
+});
+
 const spdy = require('spdy')
 const fs = require('fs')
 const port = 8080;
-
-app.get('/h2', (req, res) => {
-  res.status(200).json({message: 'ok'})
-});
 
 const options = {
   key: fs.readFileSync(__dirname + '/self.key'),
