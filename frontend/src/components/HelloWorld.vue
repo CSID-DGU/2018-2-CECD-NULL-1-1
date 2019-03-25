@@ -138,6 +138,7 @@
 </template>
 
 <script>
+import VueWebsocket from "vue-websocket";
 
 export default {
   name: 'HelloWorld',
@@ -157,6 +158,38 @@ export default {
       console.log('updated')
     })
   },
+  socket: {
+      // Prefix for event names
+      // prefix: "/counter/",
+
+      // If you set `namespace`, it will create a new socket connection to the namespace instead of `/`
+      // namespace: "/counter",
+
+      events: {
+
+          // Similar as this.$socket.on("changed", (msg) => { ... });
+          // If you set `prefix` to `/counter/`, the event name will be `/counter/changed`
+          //
+          changed(msg) {
+              console.log("Something changed: " + msg);
+          }
+
+          /* common socket.io events
+          connect() {
+              console.log("Websocket connected to " + this.$socket.nsp);
+          },
+
+          disconnect() {
+              console.log("Websocket disconnected from " + this.$socket.nsp);
+          },
+
+          error(err) {
+              console.error("Websocket error!", err);
+          }
+          */
+
+      }
+  },
   methods: {
     printImage(){
       console.log(this.imageBytes)
@@ -164,6 +197,8 @@ export default {
       // this.openWebSocket(7700)
     },
     openWebSocket (webSocketPort) {
+      this.$Vue.use(VueWebsocket, "ws://localhost:"+webSocketPort);
+
       var ws = new WebSocket("ws://localhost:"+webSocketPort);
 
       // 연결이 수립되면 서버에 메시지를 전송한다
