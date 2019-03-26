@@ -43,7 +43,7 @@ app.use(function(err, req, res, next) {
 
 const spdy = require('spdy')
 const fs = require('fs')
-const port = 8082;
+const port = 8083;
 
 app.get('/h2', (req, res) => {
   res.status(200).json({message: 'ok'})
@@ -65,26 +65,31 @@ spdy
       }
     });
 
-// mqtt : client to server - use webSocket
-var mqttHandler = require('./mqttHandlerWithClient');
-
+// WebSocket
 var WebSocket = require("ws").Server;
 var wss = new WebSocket({ port: 7700 });
+var mqttClient;
 
 wss.on("connection", function connection(ws) {
   console.log('connected!')
 
   ws.on("message", function incomming(message) {
     if(message == "mqttStart") {
-      var mqttClient = new mqttHandler();
+      mqttClient = new mqttHandler();
       
       mqttClient.connect(ws);
       mqttClient.sendMessage('give');
+    }
+    else if(message == "testEnd"){
+      mqttClient.disconnectWithServer()
     }
     else {
       console.log("No Start: %s", message);
     }
   });
 });
+
+// mqtt : client to server - use webSocket
+var mqttHandler = require('./mqttHandlerWithClient');
 
 module.exports = app;
