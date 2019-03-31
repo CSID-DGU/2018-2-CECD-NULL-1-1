@@ -9,11 +9,12 @@
     <!--&gt;</v-img>-->
     <!-- <template v-if="toggle"> -->
 
-    <v-btn class="success" @click="startConnect()">Sucs</v-btn>
+    <v-btn class="red" @click="startConnect()">Sucs</v-btn>
     <div id="testAd"></div>
 
     <v-layout>
-      <v-flex xs6 sm6>
+    <v-layout>
+      <v-flex xs6 sm6 md6 lg6 xl6>
         <v-card>
           <v-container grid-list-sm fluid>
             <v-layout row wrap>
@@ -43,7 +44,7 @@
     </v-layout>
 
     <v-layout>
-      <v-flex xs6 sm6 offset-sm3>
+      <v-flex xs6 sm6 md6 lg6 xl6 offset-sm3>
         <v-card>
           <v-container grid-list-sm fluid>
             <v-layout row wrap>
@@ -70,6 +71,7 @@
           </v-container>
         </v-card>
       </v-flex>
+    </v-layout>
     </v-layout>
     <h1>{{ msg }}</h1>
   </div>
@@ -102,8 +104,27 @@
       console.warn('destroyed', Date.now())
     },
     methods: {
-      startConnect() {
-        this.openWebSocket(7700)
+      testA() {
+        for (let i = 0; i < 100; i++) {
+          console.log("A")
+        }
+      },
+      testB() {
+        for (let i = 0; i < 100; i++) {
+          console.log("B")
+        }
+      },
+      testC() {
+        for (let i = 0; i < 100; i++) {
+          console.log("C")
+        }
+      },
+      async testAsync() {
+        await Promise.all([this.testA(), this.testB(), this.testC()])
+      },
+      async startConnect() {
+        // await Promise.all([this.openWebSocket(7700), this.greet()]);
+        await Promise.all([this.greet(), this.openWebSocket(7700)]);
       },
       changeImage(spaceID, imageBase64) {
         var container = window.document.getElementById(spaceID).firstChild.firstChild.nextSibling;
