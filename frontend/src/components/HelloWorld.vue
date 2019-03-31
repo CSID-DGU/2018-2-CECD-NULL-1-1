@@ -148,7 +148,9 @@
 </template>
 
 <script>
-
+  // import {get} from 'http2-client'
+  // var module = require('http2-client')
+  // const {get} = require('http2-client');
 export default {
   name: 'HelloWorld',
   data () {
@@ -161,34 +163,6 @@ export default {
       msg: 'Welcome to Your Vue.js App !!!!!!!!!!!',
       imageBytes: '',
       sibal:''
-    }
-  },
-  methods: {
-    greet: function (event) {
-      // 메소드 안에서 사용하는 `this` 는 Vue 인스턴스를 가리킵니다
-      // window.location.reload(true)
-
-      const baseURI = 'https://localhost:8080/images/article1.jpg';
-      this.$http.get(`${baseURI}`, {	headers: {'Content-Type': 'multipart/form-data', 'Cache-Control' : 'no-cache' } })
-        .then((result) => {
-          console.log(result)
-          // this.posts = result.data
-        })
-
-      this.control++
-      this.inho = this.msg
-      this.url = ''
-      // this.url = 'data:image/jpeg;base64,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';
-      // alert('Hello ' + this.inho + '!')
-      // `event` 는 네이티브 DOM 이벤트입니다
-      if (event) {
-        // alert(event.target.tagName)
-      }
-
-
-    },
-    getImgUrl: function() {
-      return this.url
     }
   },
   mounted(){
@@ -232,6 +206,34 @@ export default {
     changeData (data){
       this.sibal = data
     },
+    greet: function (event) {
+      // 메소드 안에서 사용하는 `this` 는 Vue 인스턴스를 가리킵니다
+      // window.location.reload(true)
+
+      console.log('greet');
+
+
+
+      const h1Target = 'http://www.example.com/';
+      const h2Target = 'https://www.example.com/';
+      module.get(h1Target, (res)=>{
+        console.log(`
+          Url : ${h1Target}
+          Status : ${res.statusCode}
+          HttpVersion : ${res.httpVersion}
+        `);
+      });
+
+      // `event` 는 네이티브 DOM 이벤트입니다
+      if (event) {
+        // alert(event.target.tagName)
+      }
+
+
+    },
+    getImgUrl: function() {
+      return this.url
+    }
   }
 }
 
