@@ -1,6 +1,11 @@
 const mosca = require('mosca');
 const fs = require('fs');
 
+var imageList = new Array
+for(var n=1; n<101; n++){
+    imageList.push("./public/images/mqtt/"+n+".jpg")
+}
+
 class MqttHandler {
     constructor(portNum){        
         var settings = {
@@ -20,19 +25,27 @@ class MqttHandler {
         // fired when a message is received
         this.server.on('published', function(packet, client) {
             if(packet.topic == "mytopic" && client != null) {
-                fs.readFile("./public/images/testImage.jpeg", function(error, data){
-                    var newPacket = {
-                        topic: packet.topic,
-                        payload: data.toString('base64'),
-                        // payload: 'RPI send',
-                        retain: packet.retain,
-                        qos: packet.qos
-                    };
+                imageList.forEach(function (item, index, array) {
+                    fs.readFile(item, function(error, data){
+                        var sendData = {
+                            'number': index+1,
+                            'image': data.toString('base64')
+                        }
+                        console.log('sendData', sendData);
 
-                    console.log('newPacket', newPacket);
+                        var newPacket = {
+                            topic: packet.topic,
+                            payload: JSON.stringify(sendData),
+                            // payload: 'RPI send',
+                            retain: packet.retain,
+                            qos: packet.qos
+                        };
 
-                    mqttServer.publish(newPacket, function() {
-                        console.log('done!');
+                        console.log('newPacket', newPacket);
+
+                        mqttServer.publish(newPacket, function() {
+                            console.log('done!');
+                        });
                     });
                 });
             }

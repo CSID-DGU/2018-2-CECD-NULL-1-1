@@ -1,5 +1,6 @@
 const mqtt = require('mqtt');
 
+
 class MqttHandlerClient {
   constructor() {
     this.mqttClient = null;
@@ -28,24 +29,27 @@ class MqttHandlerClient {
 
     // When a message arrives, console.log it
     this.mqttClient.on('message', function (topic, message) {
-      if(topic == 'mytopic'){
+      if(topic == 'mytopic' && message.toString() != "give"){
         ws.send(message.toString())
-        console.log(message.toString());
-        // client.end();
+        console.log(JSON.parse(message.toString()).number);
+        // console.log(message.toString());
       }
       else {
         console.log('no')
       }
     });
-
-    this.mqttClient.on('close', () => {
-      console.log(`mqtt client disconnected`);
-    });
   }
 
   // Sends a mqtt message to topic: mytopic
   sendMessage(message) {
+    console.log('pub')
     this.mqttClient.publish('mytopic', message);
+  }
+
+  // Sends a mqtt message to topic: mytopic
+  disconnectWithServer() {
+    console.log('disconnected')
+    this.mqttClient.end()
   }
 }
 
