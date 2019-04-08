@@ -20,7 +20,7 @@
             <v-container grid-list-sm fluid>
               <v-layout row wrap>
                 <v-flex
-                  v-for="n in 100"
+                  v-for="n in 900"
                   :key="n"
                   xs2
                   d-flex
@@ -48,7 +48,7 @@
             <v-container grid-list-sm fluid>
               <v-layout row wrap>
                 <v-flex
-                  v-for="n in 100"
+                  v-for="n in 900"
                   :key="n"
                   xs2
                   d-flex
@@ -84,8 +84,18 @@
   }
   
   function endTime(startTime, endTime, type) {
-    if(type == "MQTT") clearInterval(timerIDMQTT);
-    else clearInterval(timerIDHTTP2);
+    if(type == "MQTT") {
+      mqttDone = true;
+      // clearInterval(timerIDMQTT);
+    }
+    else {
+      // http2Done = true;
+      setInterval(function () {
+        http2Done = true;
+      }, 2000);
+      // console.log("HTTP/2 END", timerIDHTTP2);
+      // clearInterval(timerIDHTTP2);
+    }
 
     endTime = new Date();
     var timeDiff = endTime - startTime; //in ms
@@ -115,6 +125,8 @@
 
   var timerIDMQTT; // 타이머를 핸들링하기 위한 전역 변수
   var timerIDHTTP2; // 타이머를 핸들링하기 위한 전역 변수
+  var mqttDone = false;
+  var http2Done = false;
 
 	/* 타이머를 시작하는 함수 */
 	function startTimerHTTP2() { 
@@ -123,23 +135,39 @@
   
   /* 타이머를 시작하는 함수 */
 	function startTimerMQTT() { 
-		timerIDMQTT = setInterval(checkTimeMQTT, 1);
+		// timerIDMQTT = setInterval(checkTimeMQTT, 1);
+    timerIDHTTP2 = setInterval(checkTimeHTTP2, 1);
 	}
 
-	function checkTimeHTTP2() { 
-    var nowTime = new Date();
+	function checkTimeHTTP2() {
+	  // console.log(http2Done + " : " + mqttDone);
+    if (!http2Done) {
+      var nowTime = new Date();
 
-		var x1 = document.getElementById("timeHTTP2");
-    
-		x1.innerHTML = (nowTime - startTimeHTTP2)/1000;
+      var x1 = document.getElementById("timeHTTP2");
+      console.log("HTTP2 timer");
+      x1.innerHTML = (nowTime - startTimeHTTP2)/1000;
+    }
+
+    if (!mqttDone) {
+      var nowTime = new Date();
+
+      var x2 = document.getElementById("timeMQTT");
+      console.log("MQTT timer");
+      x2.innerHTML = (nowTime - startTimeHTTP2)/1000;
+    }
+
   }
   
-	function checkTimeMQTT() { 
-    var nowTime = new Date();
+	function checkTimeMQTT() {
+	  if (!mqttDone) {
+      var nowTime = new Date();
 
-    var x2 = document.getElementById("timeMQTT");
-    
-		x2.innerHTML = (nowTime - startTimeMQTT)/1000;
+      var x2 = document.getElementById("timeMQTT");
+      // console.log("MQTT timer");
+      x2.innerHTML = (nowTime - startTimeHTTP2)/1000;
+    }
+
   }
 
   export default {
@@ -186,6 +214,7 @@
         await Promise.all([this.testA(), this.testB(), this.testC()])
       },
       async startConnect() {
+
         // await Promise.all([this.openWebSocket(7700), this.greet()]);
         await Promise.all([this.greet(), this.openWebSocket(7700)]);
       },
@@ -198,8 +227,8 @@
         console.log(container.style.backgroundImage)
       },
       openWebSocket(webSocketPort) {
-        startTimeMQTT = new Date();
-        startTimerMQTT()
+        startTimeHTTP2 = new Date();
+        startTimerMQTT();
         var ws = new WebSocket("ws://localhost:" + webSocketPort);
         console.log(window.WebSocket)
 
@@ -252,19 +281,26 @@
         console.log('greet');
         // this.startTime(this.startTimeHTTP2);
         startTimeHTTP2 = new Date();
-        startTimerHTTP2()
+        // startTimerHTTP2()
         console.log(startTimeHTTP2 + "입니다.");
 
-        var http2UrlArr = new Array(101);
-        var http2Url = "https://localhost:8089/images/http2/";
+        var http2UrlArr = new Array(901);
+        var http2Url = "https://localhost:8089/images/http2_900/image_part_";
 
-        for (let i = 1; i <= 100; i++) {
-          http2UrlArr[i] = http2Url + i + ".jpg";
+        for (let i = 1; i <= 900; i++) {
+          var tempHttp2Url = http2Url;
+          if (i < 10)
+            tempHttp2Url += "00";
+          else if (i < 100)
+            tempHttp2Url += "0";
+
+          http2UrlArr[i] = tempHttp2Url + i + ".jpg";
           var imageID = "httpSpace" + i;
 
           var container = window.document.getElementById(imageID).firstChild.firstChild.nextSibling;
           container.style.backgroundImage = "url('" + http2UrlArr[i] + "')"
         }
+        clearInterval(timerIDHTTP2);
         endTime(startTimeHTTP2, endTimeHTTP2, 'HTTP2');
 
 
@@ -304,9 +340,9 @@
 
   @media (min-width: 1264px) and (max-width: 1903px) {
     .flex.lg5-custom {
-      width: 10%;
-      max-width: 10%;
-      flex-basis: 10%;
+      width: 3.33%;
+      max-width: 3.33%;
+      flex-basis: 3.33%;
     }
   }
 
