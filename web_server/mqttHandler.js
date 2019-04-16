@@ -1,9 +1,33 @@
 const mosca = require('mosca');
 const fs = require('fs');
 
-var imageList = new Array
-for(var n=1; n<101; n++){
-    imageList.push("./public/images/mqtt/"+n+".jpg")
+// var imageList = new Array(901);
+var imageList = [];
+for(var n=1; n<901; n++){
+    var tempUrl0 = "./public/images/mqtt_900/image_part_" + n + ".jpg";
+    var tempUrl1 = "./public/images/mqtt_900/image_part_0" + n + ".jpg";
+    var tempUrl2 = "./public/images/mqtt_900/image_part_00" + n + ".jpg";
+    // if (n < 10)
+    //     // tempUrl += "00";
+    //     tempUrl.concat("00");
+    // else if (n < 100)
+    //     // tempUrl += "0";
+    //     tempUrl.concat("0");
+    // // tempUrl += n + ".jpg";
+    // tempUrl = tempUrl + n + ".jpg";
+    // console.log(tempUrl);
+    // console.log(typeof tempUrl);
+    var url;
+    if (n < 10)
+        url = tempUrl2;
+    else if (n >= 10 && n < 100)
+        url = tempUrl1;
+    else
+        url = tempUrl0;
+
+
+    // var url = "./public/images/mqtt/" + n + ".jpg";
+    imageList.push(url);
 }
 
 class MqttHandler {
@@ -26,7 +50,9 @@ class MqttHandler {
         this.server.on('published', function(packet, client) {
             if(packet.topic == "mytopic" && client != null) {
                 imageList.forEach(function (item, index, array) {
+                    console.log("index : ", index, item);
                     fs.readFile(item, function(error, data){
+                        console.log(typeof data);
                         var sendData = {
                             'number': index+1,
                             'image': data.toString('base64')
