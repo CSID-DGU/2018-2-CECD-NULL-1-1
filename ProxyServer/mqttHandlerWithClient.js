@@ -4,7 +4,8 @@ const mqtt = require('mqtt');
 class MqttHandlerClient {
   constructor() {
     this.mqttClient = null;
-    this.host = 'mqtt://localhost:1883';
+    this.host = 'mqtt://10.90.2.102:1883';
+    // this.host = 'mqtt://localhost:1883';
   }
   
   connect(ws) {

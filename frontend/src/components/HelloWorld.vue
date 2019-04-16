@@ -18,6 +18,7 @@
           <div id="timeHTTP2" class="display-4">HTTP</div>
           <!--<h1>{{ http2Count }}</h1>-->
           <h1>{{ http2Final }}</h1>
+          <div class="stopwatch"></div>
           <v-btn class="blue">Start</v-btn>
           <v-card>
             <v-container grid-list-sm fluid>
@@ -33,7 +34,6 @@
                     <div :id="`httpSpace${n}`">
                       <v-img
                         :src="getHttpUrl(n)"
-                        :lazy-src="`https://picsum.photos/10/6?image=${n % 5 + 10}`"
                         aspect-ratio="1"
                         class="grey lighten-2"
                         @load="http2Count++"
@@ -45,6 +45,7 @@
               </v-layout>
             </v-container>
           </v-card>
+          <ul class="results"></ul>
         </v-flex>
         <v-flex xs6 sm6 md6 lg6 xl6 offset-sm3 ma-0>
           <div id="timeMQTT" class="display-4">MQTT</div>
@@ -63,8 +64,6 @@
                   <v-card flat tile class="d-flex">
                     <div :id="`mqttSpace${n}`">
                       <v-img
-                        :src="`https://picsum.photos/500/300?image=${n % 5 + 10}`"
-                        :lazy-src="`https://picsum.photos/10/6?image=${n % 5 + 10}`"
                         aspect-ratio="1"
                         class="grey lighten-2"
                       >
@@ -118,16 +117,16 @@
   }
 
   function msToTime(duration) {
-    var milliseconds = parseInt((duration % 1000) / 100),
+    var milliseconds = duration % 1000,
       seconds = Math.floor((duration / 1000) % 60),
       minutes = Math.floor((duration / (1000 * 60)) % 60),
       hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
 
     hours = (hours < 10) ? "0" + hours : hours;
     minutes = (minutes < 10) ? "0" + minutes : minutes;
-    seconds = (seconds < 10) ? "0" + seconds : seconds;
+    // seconds = (seconds < 10) ? "0" + seconds : seconds;
 
-    return hours + ":" + minutes + ":" + seconds + "." + milliseconds;
+    return seconds + "." + milliseconds + " s";
   }
 
   var timerIDMQTT; // 타이머를 핸들링하기 위한 전역 변수
@@ -194,8 +193,10 @@
         http2Count: 0,
         http2Final: 0,
         mqttCount: 0,
-        mqttFinal: 0
-        
+        mqttFinal: 0,
+        timerIDHTTP2: null,
+        http2Done: false,
+        stopwatchHttp2: null
       }
     },
     mounted() {
@@ -353,13 +354,23 @@
           tempHttp2Url += "0";
 
         return tempHttp2Url + i + ".jpg";
+      },
+      checkTimeHTTP2: function () {
+        if (!this.http2Done) {
+          this.endTimeHTTP2 = new Date();
+        }
       }
     },
     watch: {
       http2Count: function (data) {
         console.log(data);
+        if (data === 1)
+          this.timerIDHTTP2 = setInterval(this.checkTimeHTTP2, 1);
+
         if (data === 900) {
           console.log("loading finish");
+          this.http2Done = true;
+          clearInterval(timerIDHTTP2);
           this.endTimeHTTP2 = new Date();
         }
       },
@@ -393,5 +404,11 @@
     max-height: 780px;
   }
 
+  .stopwatch {
+    font-size: 2vw;
+    height: 100%;
+    line-height: 10vh;
+    text-align: center;
+  }
 </style>
 
