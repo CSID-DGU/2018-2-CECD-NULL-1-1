@@ -15,10 +15,10 @@
     <v-container fluid ma-0 pa-0 fill-height>
       <v-layout align-center justify-center row fill-height>
         <v-flex xs6 sm6 md6 lg6 xl6 ma-0>
-          <div id="timeHTTP2" class="display-4">HTTP</div>
+          <div class="display-4">HTTP</div>
           <!--<h1>{{ http2Count }}</h1>-->
           <h1>{{ http2Final }}</h1>
-          <v-btn class="blue">Start</v-btn>
+          <v-btn class="blue">End</v-btn>
           <v-card>
             <v-container grid-list-sm fluid>
               <v-layout row wrap>
@@ -33,7 +33,6 @@
                     <div :id="`httpSpace${n}`">
                       <v-img
                         :src="getHttpUrl(n)"
-                        :lazy-src="`https://picsum.photos/10/6?image=${n % 5 + 10}`"
                         aspect-ratio="1"
                         class="grey lighten-2"
                         @load="http2Count++"
@@ -47,8 +46,8 @@
           </v-card>
         </v-flex>
         <v-flex xs6 sm6 md6 lg6 xl6 offset-sm3 ma-0>
-          <div id="timeMQTT" class="display-4">MQTT</div>
-          <h1>{{ mqttFinal }}</h1>
+          <div class="display-4">MQTT</div>
+          <h1 id="timeMQTT">0</h1>
           <v-btn class="red" @click="startConnect()">Start</v-btn>
           <v-card>
             <v-container grid-list-sm fluid>
@@ -63,8 +62,6 @@
                   <v-card flat tile class="d-flex">
                     <div :id="`mqttSpace${n}`">
                       <v-img
-                        :src="`https://picsum.photos/500/300?image=${n % 5 + 10}`"
-                        :lazy-src="`https://picsum.photos/10/6?image=${n % 5 + 10}`"
                         aspect-ratio="1"
                         class="grey lighten-2"
                       >
@@ -115,6 +112,8 @@
     // console.log(endTime + " " + startTime);
     // console.log(endTime === startTime);
     console.log(msToTime(seconds));
+
+    return msToTime(seconds);
   }
 
   function msToTime(duration) {
@@ -229,7 +228,7 @@
 
         // await Promise.all([this.openWebSocket(7700), this.greet()]);
         // await Promise.all([this.greet(), this.openWebSocket(7700)]);
-        this.greet();
+        this.openWebSocket(7700);
       },
       changeImage(spaceID, imageBase64) {
         var container = window.document.getElementById(spaceID).firstChild.firstChild.nextSibling;
@@ -240,8 +239,8 @@
         console.log(container.style.backgroundImage)
       },
       openWebSocket(webSocketPort) {
-        startTimeHTTP2 = new Date();
-        startTimerMQTT();
+        startTimeMQTT = new Date();
+
         var ws = new WebSocket("ws://localhost:" + webSocketPort);
         console.log(window.WebSocket)
 
@@ -267,10 +266,11 @@
 
             container.style.backgroundImage = "url('" + this.imageBytes + "')"
 
-            // console.log(container.style.backgroundImage)
-
             if (receivedNum == 900) {
-              endTime(startTimeMQTT, endTimeMQTT, 'MQTT');
+              endTimeMQTT = new Date();
+              
+              window.document.getElementById('timeMQTT').innerHTML = msToTime(endTimeMQTT - startTimeMQTT)
+
               console.log('end')
               ws.send("testEnd")
             }
