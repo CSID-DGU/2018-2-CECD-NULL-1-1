@@ -198,7 +198,7 @@
         timerIDHTTP2: null,
         http2Done: false,
         stopwatchHttp2: null,
-        testCaseNum: 100
+        testCaseNum: 1000
       }
     },
     mounted() {
@@ -348,7 +348,7 @@
         return this.url
       },
       getHttpUrl: function (i) {
-        var size = 1000;
+        var size = 200;
         var http2Url = "https://10.90.3.147:8089/images/sample/" + size + "/blue";
         // var http2Url = "https://10.90.3.147:8089/images/http2_900/image_part_"; //10.90.2.102
         // var http2Url = "https://10.90.3.147:8089/images/http2/"; //10.90.2.102

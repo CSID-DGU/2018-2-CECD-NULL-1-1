@@ -17,7 +17,7 @@ for (var n = 1; n <= 100; n++) {
     // tempUrl = tempUrl + n + ".jpg";
     // console.log(tempUrl);
     // console.log(typeof tempUrl);
-    var url = "./public/images/sample/200/blue" + n + ".jpg";
+    var url = "./public/images/sample/200a/blue" + n + ".jpg";
     // if (n < 10)
     //     url = tempUrl2;
     // else if (n >= 10 && n < 100)
