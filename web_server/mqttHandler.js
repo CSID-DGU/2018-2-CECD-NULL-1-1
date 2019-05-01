@@ -50,14 +50,14 @@ class MqttHandler {
         this.server.on('published', function (packet, client) {
             if (packet.topic == "mytopic" && client != null) {
                 imageList.forEach(function (item, index, array) {
-                    console.log("index : ", index, item);
-                    fs.readFile(item, function (error, data) {
-                        console.log(typeof data);
+                    //console.log("index : ", index, item);
+                    fs.readFile(item, function(error, data){
+                        //console.log(typeof data);
                         var sendData = {
                             'number': index + 1,
                             'image': data.toString('base64')
                         }
-                        console.log('sendData', sendData);
+                        //console.log('sendData', sendData);
 
                         var newPacket = {
                             topic: packet.topic,
@@ -67,10 +67,10 @@ class MqttHandler {
                             qos: packet.qos
                         };
 
-                        console.log('newPacket', newPacket);
+                        //console.log('newPacket', newPacket);
 
-                        mqttServer.publish(newPacket, function () {
-                            console.log('done!');
+                        mqttServer.publish(newPacket, function() {
+                            //console.log('done!');
                         });
                     });
                 });
