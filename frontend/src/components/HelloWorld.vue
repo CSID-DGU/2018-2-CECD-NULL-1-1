@@ -23,7 +23,7 @@
             <v-container grid-list-sm fluid>
               <v-layout row wrap>
                 <v-flex
-                  v-for="n in 900"
+                  v-for="n in testCaseNum"
                   :key="n"
                   xs2
                   d-flex
@@ -53,7 +53,7 @@
             <v-container grid-list-sm fluid>
               <v-layout row wrap>
                 <v-flex
-                  v-for="n in 900"
+                  v-for="n in testCaseNum"
                   :key="n"
                   xs2
                   d-flex
@@ -126,6 +126,7 @@
     minutes = (minutes < 10) ? "0" + minutes : minutes;
     // seconds = (seconds < 10) ? "0" + seconds : seconds;
 
+    seconds += minutes * 60;
     return seconds + "." + milliseconds + " s";
   }
 
@@ -196,7 +197,8 @@
         mqttFinal: 0,
         timerIDHTTP2: null,
         http2Done: false,
-        stopwatchHttp2: null
+        stopwatchHttp2: null,
+        testCaseNum: 100
       }
     },
     mounted() {
@@ -268,9 +270,9 @@
 
             container.style.backgroundImage = "url('" + this.imageBytes + "')"
 
-            if (receivedNum == 900) {
+            if (receivedNum === 100) {
               endTimeMQTT = new Date();
-              
+
               window.document.getElementById('timeMQTT').innerHTML = msToTime(endTimeMQTT - startTimeMQTT)
 
               console.log('end')
@@ -346,15 +348,25 @@
         return this.url
       },
       getHttpUrl: function (i) {
-        var http2Url = "https://10.90.2.102:8089/images/http2_900/image_part_"; //10.90.2.102
+        var size = 1000;
+        var http2Url = "https://10.90.3.147:8089/images/sample/" + size + "/blue";
+        // var http2Url = "https://10.90.3.147:8089/images/http2_900/image_part_"; //10.90.2.102
+        // var http2Url = "https://10.90.3.147:8089/images/http2/"; //10.90.2.102
 
-        var tempHttp2Url = http2Url;
-        if (i < 10)
-          tempHttp2Url += "00";
-        else if (i < 100)
-          tempHttp2Url += "0";
+        // var tempHttp2Url = http2Url;
+        // if (i < 10)
+        //   tempHttp2Url += "00";
+        // else if (i < 100)
+        //   tempHttp2Url += "0";
 
-        return tempHttp2Url + i + ".jpg";
+        // https://10.90.3.147:8089/images/tiger100x100/image_27.15_16.jpeg
+
+        // let width = 50;
+
+        // http2Url += (parseInt((i + 49)/ width)) + "_";
+        // http2Url += (i % width + 1) + ".jpeg";
+
+        return http2Url + i + ".jpg";
       },
       checkTimeHTTP2: function () {
         if (!this.http2Done) {
@@ -368,10 +380,10 @@
         if (data === 1)
           this.timerIDHTTP2 = setInterval(this.checkTimeHTTP2, 1);
 
-        if (data === 900) {
+        if (data === this.testCaseNum) {
           console.log("loading finish");
           this.http2Done = true;
-          clearInterval(timerIDHTTP2);
+          clearInterval(this.timerIDHTTP2);
           this.endTimeHTTP2 = new Date();
         }
       },
@@ -395,9 +407,21 @@
 
   @media (min-width: 1264px) and (max-width: 1903px) {
     .flex.lg5-custom {
-      width: 3.33%;
-      max-width: 3.33%;
-      flex-basis: 3.33%;
+      /*width: 3.33%;*/
+      /*max-width: 3.33%;*/
+      /*flex-basis: 3.33%;*/
+      /*width: 2%;*/
+      /*max-width: 2%;*/
+      /*flex-basis: 2%;*/
+      /*width: 2.5%;*/
+      /*max-width: 2.5%;*/
+      /*flex-basis: 2.5%;*/
+      /*width: 5%;*/
+      /*max-width: 5%;*/
+      /*flex-basis: 5%;*/
+      width: 10%;
+      max-width: 10%;
+      flex-basis: 10%;
     }
   }
 
