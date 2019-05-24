@@ -4,8 +4,8 @@ const mqtt = require('mqtt');
 class MqttHandlerClient {
   constructor() {
     this.mqttClient = null;
-    this.host = 'mqtt://10.90.3.147:1883';
-    // this.host = 'mqtt://localhost:1883';
+    // this.host = 'mqtt://10.90.3.147:1883';
+    this.host = 'mqtt://localhost:1883';
   }
   
   connect(ws) {
@@ -31,7 +31,9 @@ class MqttHandlerClient {
     // When a message arrives, console.log it
     this.mqttClient.on('message', function (topic, message) {
       if(topic == 'mytopic' && message.toString() != "give"){
-        ws.send(message.toString())
+        setTimeout(function () {
+          ws.send(message.toString())
+        }, 10 * getRandomInt(1, 400));
         console.log(JSON.parse(message.toString()).number);
         // console.log(message.toString());
       }
@@ -52,6 +54,10 @@ class MqttHandlerClient {
     console.log('disconnected')
     this.mqttClient.end()
   }
+}
+
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
 }
 
 module.exports = MqttHandlerClient;

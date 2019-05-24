@@ -3,7 +3,7 @@ const fs = require('fs');
 
 // var imageList = new Array(901);
 var imageList = [];
-for (var n = 1; n <= 100; n++) {
+for (var n = 1; n <= 400; n++) {
     // var tempUrl0 = "./public/images/mqtt_900/image_part_" + n + ".jpg";
     // var tempUrl1 = "./public/images/mqtt_900/image_part_0" + n + ".jpg";
     // var tempUrl2 = "./public/images/mqtt_900/image_part_00" + n + ".jpg";
@@ -17,7 +17,7 @@ for (var n = 1; n <= 100; n++) {
     // tempUrl = tempUrl + n + ".jpg";
     // console.log(tempUrl);
     // console.log(typeof tempUrl);
-    var url = "./public/images/sample/200a/blue" + n + ".jpg";
+    var url = "./public/images/sample/500a/blue" + n + ".jpg";
     // if (n < 10)
     //     url = tempUrl2;
     // else if (n >= 10 && n < 100)

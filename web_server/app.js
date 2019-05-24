@@ -40,25 +40,30 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+// run server
+app.listen(app.get('port'), () => {
+    console.log('app listening on port ' + app.get('port'));
+});
 
-const spdy = require('spdy')
-const fs = require('fs')
-const port = 8089;
 
-const options = {
-  key: fs.readFileSync(__dirname + '/self.key'),
-  cert:  fs.readFileSync(__dirname + '/self.crt')
-};
-
-spdy
-    .createServer(options, app)
-    .listen(port, (error) => {
-      if (error) {
-        console.error(error)
-        return process.exit(1)
-      } else {
-        console.log('Listening on port: ' + port + '.')
-      }
-    });
+// const spdy = require('spdy')
+// const fs = require('fs')
+// const port = 8089;
+//
+// const options = {
+//   key: fs.readFileSync(__dirname + '/self.key'),
+//   cert:  fs.readFileSync(__dirname + '/self.crt')
+// };
+//
+// spdy
+//     .createServer(options, app)
+//     .listen(port, (error) => {
+//       if (error) {
+//         console.error(error)
+//         return process.exit(1)
+//       } else {
+//         console.log('Listening on port: ' + port + '.')
+//       }
+//     });
 
 module.exports = app;
