@@ -22,6 +22,7 @@
                   <v-card flat tile class="d-flex">
                     <div :id="`httpSpace${n}`">
                       <v-img
+                        :src="getHttpUrl(n)"
                         aspect-ratio="1"
                         class="grey lighten-2"
                         @load="http2Count++"
@@ -36,7 +37,8 @@
         </v-flex>
         <v-flex xs6 sm6 md6 lg6 xl6 offset-sm3 ma-0>
           <div class="display-4">MQTT</div>
-          <h1 id="timeMQTT">0</h1>
+          <!--<h1 id="timeMQTT">0</h1>-->
+          <h1>{{ mqttFinal }}</h1>
           <v-btn class="red" @click="startConnect()">Start</v-btn>
           <v-card>
             <v-container grid-list-sm fluid>
@@ -68,42 +70,44 @@
 </template>
 
 <script>
-  var receivedNum = 0;
-  var startTimeHTTP2 = 0, endTimeHTTP2 = 0;
-  var startTimeMQTT = 0, endTimeMQTT = 0;
+  import swal from 'sweetalert';
 
-  function startTime(startTime) {
-    startTime = new Date();
-  }
-
-  function endTime(startTime, endTime, type) {
-    if (type == "MQTT") {
-      mqttDone = true;
-      // clearInterval(timerIDMQTT);
-    } else {
-      // http2Done = true;
-      setInterval(function () {
-        http2Done = true;
-      }, 2000);
-      // console.log("HTTP/2 END", timerIDHTTP2);
-      // clearInterval(timerIDHTTP2);
-    }
-
-    endTime = new Date();
-    var timeDiff = endTime - startTime; //in ms
-    // strip the ms
-    // timeDiff /= 1000;
-
-    // get seconds
-    var seconds = Math.round(timeDiff);
-    // console.log(seconds + " seconds : " + type);
-    console.log(timeDiff + " ms : " + type);
-    // console.log(endTime + " " + startTime);
-    // console.log(endTime === startTime);
-    console.log(msToTime(seconds));
-
-    return msToTime(seconds);
-  }
+  // var receivedNum = 0;
+  // var startTimeHTTP2 = 0, endTimeHTTP2 = 0;
+  // var startTimeMQTT = 0, endTimeMQTT = 0;
+  //
+  // function startTime(startTime) {
+  //   startTime = new Date();
+  // }
+  //
+  // function endTime(startTime, endTime, type) {
+  //   if (type == "MQTT") {
+  //     mqttDone = true;
+  //     // clearInterval(timerIDMQTT);
+  //   } else {
+  //     // http2Done = true;
+  //     setInterval(function () {
+  //       http2Done = true;
+  //     }, 2000);
+  //     // console.log("HTTP/2 END", timerIDHTTP2);
+  //     // clearInterval(timerIDHTTP2);
+  //   }
+  //
+  //   endTime = new Date();
+  //   var timeDiff = endTime - startTime; //in ms
+  //   // strip the ms
+  //   // timeDiff /= 1000;
+  //
+  //   // get seconds
+  //   var seconds = Math.round(timeDiff);
+  //   // console.log(seconds + " seconds : " + type);
+  //   console.log(timeDiff + " ms : " + type);
+  //   // console.log(endTime + " " + startTime);
+  //   // console.log(endTime === startTime);
+  //   console.log(msToTime(seconds));
+  //
+  //   return msToTime(seconds);
+  // }
 
   function msToTime(duration) {
     var milliseconds = duration % 1000,
@@ -119,52 +123,52 @@
     return seconds + "." + milliseconds + " s";
   }
 
-  var timerIDMQTT; // 타이머를 핸들링하기 위한 전역 변수
-  var timerIDHTTP2; // 타이머를 핸들링하기 위한 전역 변수
-  var mqttDone = false;
-  var http2Done = false;
-
-  /* 타이머를 시작하는 함수 */
-  function startTimerHTTP2() {
-    timerIDHTTP2 = setInterval(checkTimeHTTP2, 1);
-  }
-
-  /* 타이머를 시작하는 함수 */
-  function startTimerMQTT() {
-    // timerIDMQTT = setInterval(checkTimeMQTT, 1);
-    timerIDHTTP2 = setInterval(checkTimeHTTP2, 1);
-  }
-
-  function checkTimeHTTP2() {
-    // console.log(http2Done + " : " + mqttDone);
-    if (!http2Done) {
-      var nowTime = new Date();
-
-      var x1 = document.getElementById("timeHTTP2");
-      console.log("HTTP2 timer");
-      x1.innerHTML = (nowTime - startTimeHTTP2) / 1000;
-    }
-
-    if (!mqttDone) {
-      var nowTime = new Date();
-
-      var x2 = document.getElementById("timeMQTT");
-      console.log("MQTT timer");
-      x2.innerHTML = (nowTime - startTimeHTTP2) / 1000;
-    }
-
-  }
-
-  function checkTimeMQTT() {
-    if (!mqttDone) {
-      var nowTime = new Date();
-
-      var x2 = document.getElementById("timeMQTT");
-      // console.log("MQTT timer");
-      x2.innerHTML = (nowTime - startTimeHTTP2) / 1000;
-    }
-
-  }
+  // var timerIDMQTT; // 타이머를 핸들링하기 위한 전역 변수
+  // var timerIDHTTP2; // 타이머를 핸들링하기 위한 전역 변수
+  // var mqttDone = false;
+  // var http2Done = false;
+  //
+  // /* 타이머를 시작하는 함수 */
+  // function startTimerHTTP2() {
+  //   timerIDHTTP2 = setInterval(checkTimeHTTP2, 1);
+  // }
+  //
+  // /* 타이머를 시작하는 함수 */
+  // function startTimerMQTT() {
+  //   // timerIDMQTT = setInterval(checkTimeMQTT, 1);
+  //   timerIDHTTP2 = setInterval(checkTimeHTTP2, 1);
+  // }
+  //
+  // function checkTimeHTTP2() {
+  //   // console.log(http2Done + " : " + mqttDone);
+  //   if (!http2Done) {
+  //     var nowTime = new Date();
+  //
+  //     var x1 = document.getElementById("timeHTTP2");
+  //     console.log("HTTP2 timer");
+  //     x1.innerHTML = (nowTime - startTimeHTTP2) / 1000;
+  //   }
+  //
+  //   if (!mqttDone) {
+  //     var nowTime = new Date();
+  //
+  //     var x2 = document.getElementById("timeMQTT");
+  //     console.log("MQTT timer");
+  //     x2.innerHTML = (nowTime - startTimeHTTP2) / 1000;
+  //   }
+  //
+  // }
+  //
+  // function checkTimeMQTT() {
+  //   if (!mqttDone) {
+  //     var nowTime = new Date();
+  //
+  //     var x2 = document.getElementById("timeMQTT");
+  //     // console.log("MQTT timer");
+  //     x2.innerHTML = (nowTime - startTimeHTTP2) / 1000;
+  //   }
+  //
+  // }
 
   export default {
     name: 'HelloWorld',
@@ -185,7 +189,9 @@
         mqttCount: 0,
         mqttFinal: 0,
         timerIDHTTP2: null,
+        timerIDMQTT: null,
         http2Done: false,
+        mqttDone: false,
         stopwatchHttp2: null,
         testCaseNum: 500
       }
@@ -200,13 +206,13 @@
     },
     methods: {
       async startConnect() {
-
+        this.startTimeMQTT = new Date();
         this.openWebSocket(7700);
       },
       // 웹소켓 생성하고 서버로부터 데이터 받아오는 함수
       openWebSocket(webSocketPort) {
         // 테스트 시작시간
-        startTimeMQTT = new Date();
+        // startTimeMQTT = new Date();
 
         // 웹소켓 생성
         var ws = new WebSocket("ws://localhost:" + webSocketPort);
@@ -214,17 +220,21 @@
         // 연결이 수립되면 서버에 메시지를 전송한다
         ws.onopen = function (event) {
           console.log("connected")
-          ws.send("mqttStart");
+          ws.send(JSON.stringify({
+            type: "mqttStart",
+            bandwidth: 256,
+            size: 1000
+          }));
         }
 
         // 서버로 부터 메시지를 수신한다
         // 전송받은 이미지를 출력하도록해줌
         var i = 0;
-        ws.onmessage = function (event) {
+        ws.onmessage = (event) => {
           if (event.data != "give") {
-            receivedNum += 1
+            this.mqttCount += 1
             var objData = JSON.parse(event.data)
-            console.log(objData)
+            // console.log(objData)
 
             this.imageBytes = 'data:image/jpeg;base64,' + objData.image
             var imageID = "mqttSpace" + objData.number
@@ -233,10 +243,10 @@
 
             container.style.backgroundImage = "url('" + this.imageBytes + "')"
 
-            if (receivedNum === 100) {
-              endTimeMQTT = new Date();
-
-              window.document.getElementById('timeMQTT').innerHTML = msToTime(endTimeMQTT - startTimeMQTT)
+            if (this.mqttCount === this.testCaseNum) {
+              // endTimeMQTT = new Date();
+              //
+              // window.document.getElementById('timeMQTT').innerHTML = msToTime(endTimeMQTT - startTimeMQTT)
 
               console.log('end')
               ws.send("testEnd")
@@ -255,8 +265,9 @@
         }
       },
       getHttpUrl: function (i) {
-        var size = 200;
-        var http2Url = "https://10.90.3.147:8089/images/sample/" + size + "/blue";
+        var size = 500;
+        var http2Url = "http://localhost:8081/images/sample/" + size + "a/blue";
+        // var http2Url = "https://10.90.3.147:8089/images/sample/" + size + "/blue";
         // var http2Url = "https://10.90.3.147:8089/images/http2_900/image_part_"; //10.90.2.102
         // var http2Url = "https://10.90.3.147:8089/images/http2/"; //10.90.2.102
 
@@ -279,6 +290,11 @@
         if (!this.http2Done) {
           this.endTimeHTTP2 = new Date();
         }
+      },
+      checkTimeMQTT: function () {
+        if (!this.mqttDone) {
+          this.endTimeMQTT = new Date();
+        }
       }
     },
     watch: {
@@ -288,15 +304,46 @@
           this.timerIDHTTP2 = setInterval(this.checkTimeHTTP2, 1);
 
         if (data === this.testCaseNum) {
-          console.log("loading finish");
+          console.log("loading HTTP/2 finish");
           this.http2Done = true;
           clearInterval(this.timerIDHTTP2);
           this.endTimeHTTP2 = new Date();
+          swal("Done! Please try MQTT!", "", "success");
         }
       },
       endTimeHTTP2: function (data) {
         this.http2Final = msToTime(data - this.startTimeHTTP2);
-      }
+      },
+      mqttCount: function (data) {
+        console.log(data);
+        if (data === 1)
+          this.timerIDMQTT = setInterval(this.checkTimeMQTT, 1);
+
+        if (data === this.testCaseNum) {
+          console.log("loading MQTT finish");
+          this.mqttDone = true;
+          clearInterval(this.timerIDMQTT);
+          this.endTimeMQTT = new Date();
+
+          const mqttFinalTime = this.endTimeMQTT - this.startTimeMQTT;
+          const http2FinalTime = this.endTimeHTTP2 - this.startTimeHTTP2;
+          const ratio = mqttFinalTime / http2FinalTime;
+          const percent = Math.round(ratio * 100);
+
+          let phrase = "";
+          if (percent < 100) {
+            let reRatio = Math.round(http2FinalTime / mqttFinalTime * 100);
+            phrase = reRatio + "% faster than HTTP/2";
+          }
+          else if (percent > 100)
+            phrase = percent + "% slower than HTTP/2";
+
+          swal(phrase, "", "success");
+        }
+      },
+      endTimeMQTT: function (data) {
+        this.mqttFinal = msToTime(data - this.startTimeMQTT);
+      },
 
     }
   }

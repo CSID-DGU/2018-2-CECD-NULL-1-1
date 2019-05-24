@@ -2,33 +2,7 @@ const mosca = require('mosca');
 const fs = require('fs');
 
 // var imageList = new Array(901);
-var imageList = [];
-for (var n = 1; n <= 400; n++) {
-    // var tempUrl0 = "./public/images/mqtt_900/image_part_" + n + ".jpg";
-    // var tempUrl1 = "./public/images/mqtt_900/image_part_0" + n + ".jpg";
-    // var tempUrl2 = "./public/images/mqtt_900/image_part_00" + n + ".jpg";
-    // if (n < 10)
-    //     // tempUrl += "00";
-    //     tempUrl.concat("00");
-    // else if (n < 100)
-    //     // tempUrl += "0";
-    //     tempUrl.concat("0");
-    // // tempUrl += n + ".jpg";
-    // tempUrl = tempUrl + n + ".jpg";
-    // console.log(tempUrl);
-    // console.log(typeof tempUrl);
-    var url = "./public/images/sample/500a/blue" + n + ".jpg";
-    // if (n < 10)
-    //     url = tempUrl2;
-    // else if (n >= 10 && n < 100)
-    //     url = tempUrl1;
-    // else
-    //     url = tempUrl0;
 
-
-    // var url = "./public/images/mqtt/" + n + ".jpg";
-    imageList.push(url);
-}
 
 class MqttHandler {
     constructor(portNum) {
@@ -48,10 +22,28 @@ class MqttHandler {
 
         // fired when a message is received
         this.server.on('published', function (packet, client) {
+
+            // let imageList = [];
+            // for (var n = 1; n <= packet.payload; n++) {
+            //     var url = "./public/images/sample/500a/blue" + n + ".jpg";
+            //     imageList.push(url);
+            // }
+
             if (packet.topic == "mytopic" && client != null) {
+                console.log(packet);
+                const stringBuf = packet.payload.toString('utf-8');
+                const obj = JSON.parse(stringBuf);
+                console.log(obj);
+
+                const imageList = [];
+                for (var n = 1; n <= 500; n++) {
+                    var url = "./public/images/sample/" + obj.size + "a/blue" + n + ".jpg";
+                    imageList.push(url);
+                }
+
                 imageList.forEach(function (item, index, array) {
                     //console.log("index : ", index, item);
-                    fs.readFile(item, function(error, data){
+                    fs.readFile(item, function (error, data) {
                         //console.log(typeof data);
                         var sendData = {
                             'number': index + 1,
@@ -69,7 +61,7 @@ class MqttHandler {
 
                         //console.log('newPacket', newPacket);
 
-                        mqttServer.publish(newPacket, function() {
+                        mqttServer.publish(newPacket, function () {
                             //console.log('done!');
                         });
                     });
