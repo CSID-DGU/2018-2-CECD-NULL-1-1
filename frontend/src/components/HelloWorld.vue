@@ -1,15 +1,5 @@
 <template>
   <div class="hello">
-
-    <!--<v-btn color="blue" v-on:click="greet">Start</v-btn>-->
-    <!--<v-img-->
-    <!--:src='getImgUrl()'-->
-    <!--aspect-ratio="1"-->
-    <!--class="grey lighten-2"-->
-    <!--&gt;</v-img>-->
-    <!-- <template v-if="toggle"> -->
-
-
     <div id="testAd"></div>
 
     <v-container fluid ma-0 pa-0 fill-height>
@@ -32,7 +22,6 @@
                   <v-card flat tile class="d-flex">
                     <div :id="`httpSpace${n}`">
                       <v-img
-                        :src="getHttpUrl(n)"
                         aspect-ratio="1"
                         class="grey lighten-2"
                         @load="http2Count++"
@@ -198,7 +187,7 @@
         timerIDHTTP2: null,
         http2Done: false,
         stopwatchHttp2: null,
-        testCaseNum: 1000
+        testCaseNum: 500
       }
     },
     mounted() {
@@ -210,43 +199,17 @@
       console.warn('destroyed', Date.now())
     },
     methods: {
-      testA() {
-        for (let i = 0; i < 100; i++) {
-          console.log("A")
-        }
-      },
-      testB() {
-        for (let i = 0; i < 100; i++) {
-          console.log("B")
-        }
-      },
-      testC() {
-        for (let i = 0; i < 100; i++) {
-          console.log("C")
-        }
-      },
-      async testAsync() {
-        await Promise.all([this.testA(), this.testB(), this.testC()])
-      },
       async startConnect() {
 
-        // await Promise.all([this.openWebSocket(7700), this.greet()]);
-        // await Promise.all([this.greet(), this.openWebSocket(7700)]);
         this.openWebSocket(7700);
       },
-      changeImage(spaceID, imageBase64) {
-        var container = window.document.getElementById(spaceID).firstChild.firstChild.nextSibling;
-
-        // var imageBase64 = "data:image/jpeg;base64,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"
-        container.style.backgroundImage = "url('" + imageBase64 + "')"
-
-        console.log(container.style.backgroundImage)
-      },
+      // 웹소켓 생성하고 서버로부터 데이터 받아오는 함수
       openWebSocket(webSocketPort) {
+        // 테스트 시작시간
         startTimeMQTT = new Date();
 
+        // 웹소켓 생성
         var ws = new WebSocket("ws://localhost:" + webSocketPort);
-        console.log(window.WebSocket)
 
         // 연결이 수립되면 서버에 메시지를 전송한다
         ws.onopen = function (event) {
@@ -261,7 +224,7 @@
           if (event.data != "give") {
             receivedNum += 1
             var objData = JSON.parse(event.data)
-            // console.log(objData)
+            console.log(objData)
 
             this.imageBytes = 'data:image/jpeg;base64,' + objData.image
             var imageID = "mqttSpace" + objData.number
@@ -290,62 +253,6 @@
         ws.onclose = function (event) {
           console.log("Server close message: ", event);
         }
-      },
-      greet: function (event) {
-        // 메소드 안에서 사용하는 `this` 는 Vue 인스턴스를 가리킵니다
-        // window.location.reload(true)
-
-        console.log('greet');
-        this.http2Count = 0;
-        // this.startTime(this.startTimeHTTP2);
-        startTimeHTTP2 = new Date();
-        // startTimerHTTP2()
-        console.log(startTimeHTTP2 + "입니다.");
-
-        var http2UrlArr = new Array(901);
-        // var http2Url = "https://localhost:8089/images/http2_900/image_part_"; //10.90.2.102
-        var http2Url = "https://10.90.2.102:8089/images/http2_900/image_part_"; //10.90.2.102
-
-        for (let i = 1; i <= 900; i++) {
-          var tempHttp2Url = http2Url;
-          if (i < 10)
-            tempHttp2Url += "00";
-          else if (i < 100)
-            tempHttp2Url += "0";
-
-          http2UrlArr[i] = tempHttp2Url + i + ".jpg";
-          var imageID = "httpSpace" + i;
-
-          var container = window.document.getElementById(imageID).firstChild.firstChild.nextSibling;
-          container.style.backgroundImage = "url('" + http2UrlArr[i] + "')"
-        }
-        // clearInterval(timerIDHTTP2);
-        // endTime(startTimeHTTP2, endTimeHTTP2, 'HTTP2');
-
-        endTimeHTTP2 = new Date();
-        var seconds = Math.round(endTimeHTTP2 - startTimeHTTP2);
-        console.log(msToTime(seconds));
-
-
-        // const h1Target = 'http://www.example.com/';
-        // const h2Target = 'https://www.example.com/';
-        // module.get(h1Target, (res)=>{
-        //   console.log(`
-        //     Url : ${h1Target}
-        //     Status : ${res.statusCode}
-        //     HttpVersion : ${res.httpVersion}
-        //   `);
-        // });
-
-        // `event` 는 네이티브 DOM 이벤트입니다
-        if (event) {
-          // alert(event.target.tagName)
-        }
-
-
-      },
-      getImgUrl: function () {
-        return this.url
       },
       getHttpUrl: function (i) {
         var size = 200;
@@ -394,10 +301,8 @@
     }
   }
 
-  // MQTT
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   .imageRatio {
     width: 100%;
@@ -407,21 +312,9 @@
 
   @media (min-width: 1264px) and (max-width: 1903px) {
     .flex.lg5-custom {
-      /*width: 3.33%;*/
-      /*max-width: 3.33%;*/
-      /*flex-basis: 3.33%;*/
-      /*width: 2%;*/
-      /*max-width: 2%;*/
-      /*flex-basis: 2%;*/
-      /*width: 2.5%;*/
-      /*max-width: 2.5%;*/
-      /*flex-basis: 2.5%;*/
-      /*width: 5%;*/
-      /*max-width: 5%;*/
-      /*flex-basis: 5%;*/
-      width: 10%;
-      max-width: 10%;
-      flex-basis: 10%;
+      width: 5%;
+      max-width: 5%;
+      flex-basis: 5%;
     }
   }
 
